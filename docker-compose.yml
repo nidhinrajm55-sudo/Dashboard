@@ -1,0 +1,46 @@
+services:
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  processor:
+    build: .
+    command: python -m app.processor
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  ingest:
+    build: .
+    command: python -m app.ingest
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      INGEST_INTERVAL_SECONDS: 300
+    depends_on:
+      redis:
+        condition: service_healthy
+
+volumes:
+  redis-data:

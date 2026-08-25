@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Live weather readings from an Open-Meteo Redis Streams pipeline">
+  <title>Weather Stream</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">WEATHER / STREAM MONITOR</p>
+        <h1>Live conditions</h1>
+        <p class="subhead">Open-Meteo readings, processed through Redis Streams.</p>
+      </div>
+      <div class="connection" id="connection"><span class="dot"></span> Connecting</div>
+    </header>
+
+    <section class="toolbar" aria-label="Dashboard controls">
+      <label for="location-filter">Location</label>
+      <select id="location-filter"><option value="">All locations</option></select>
+      <button id="refresh" type="button">Refresh now</button>
+      <span class="updated" id="updated">Waiting for first reading</span>
+    </section>
+
+    <section class="cards" id="cards" aria-live="polite">
+      <p class="empty">No readings yet. Start the ingest and processor services.</p>
+    </section>
+
+    <section class="panel chart-panel" aria-labelledby="trend-title">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">SIGNAL HISTORY</p>
+          <h2 id="trend-title">Temperature and humidity trend</h2>
+        </div>
+        <div class="legend" aria-label="Chart legend"><span><i class="legend-swatch temp"></i>Temperature</span><span><i class="legend-swatch humidity"></i>Humidity</span></div>
+      </div>
+      <div class="chart-wrap" id="chart" role="img" aria-label="Temperature and humidity history chart"><p class="empty">Waiting for enough readings to draw the trend.</p></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">EVENT LOG</p>
+          <h2>Recent readings</h2>
+        </div>
+        <span class="count" id="count">0 events</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Location</th><th>Temperature</th><th>Feels like</th><th>Humidity</th><th>Wind</th><th>Observed</th></tr></thead>
+          <tbody id="reading-table"><tr><td colspan="6" class="empty">No data available.</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>
